@@ -15,10 +15,14 @@ app.get("/", function (req, res) {
 
 
 // your first API endpoint... 
-app.get("/api/:date", async function (req, res) {
+app.get("/api/:date?", async function (req, res) {
     let date = new Date;
     let param = isNaN(req.params.date) ? req.params.date : Number(req.params.date);
 
+    if (date == undefined) {
+        date = Date.now();
+    }
+    
     date = new Date(param);
 
     let isValid = false;
