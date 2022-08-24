@@ -15,23 +15,33 @@ app.get("/", function (req, res) {
 
 
 // your first API endpoint... 
-app.get("/api/:date", function (req, res) {
-    try {
-        let date = new Date;
-        let param = isNaN(req.params.date) ? req.params.date :  Number(req.params.date);
+app.get("/api/:date", async function (req, res) {
+    let date = new Date;
+    let param = isNaN(req.params.date) ? req.params.date : Number(req.params.date);
 
-        date = new Date(param);
+    date = new Date(param);
 
-        return res.send({
-            unix: date.getTime(),
-            utc: date.toUTCString(),
-        })
+    let isValid = false;
+    let obj = {};
 
-    } catch (error) {
-        return {
-            data: 'invalid date',
+    if (Object.prototype.toString.call(date) === "[object Date]") {
+        if (isNaN(date)) {
+            isValid = false;
+        } else {
+            isValid = true;
         }
+    } else {
+        isValid = false;
     }
+
+    if (isValid) {
+        obj.unix = date.getTime();
+        obj.utc = date.toUTCString();
+    } else {
+        obj.error = "Invalid Date";
+    }
+
+    return res.send(obj)
 });
 
 module.exports = app;
